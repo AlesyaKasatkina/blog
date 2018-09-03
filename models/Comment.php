@@ -5,23 +5,23 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "user".
+ * This is the model class for table "comment".
  *
  * @property int $id
- * @property string $username
- * @property string $password
- * @property string $salt
+ * @property string $author
  * @property string $email
- * @property string $profile
+ * @property string $content
+ * @property int $status
+ * @property string $url
  */
-class User extends \yii\db\ActiveRecord
+class Comment extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'user';
+        return 'comment';
     }
 
     /**
@@ -30,7 +30,8 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'salt', 'email', 'profile'], 'string', 'max' => 255],
+            [['status'], 'integer'],
+            [['author', 'email', 'content', 'url'], 'string', 'max' => 255],
         ];
     }
 
@@ -41,11 +42,11 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
-            'password' => 'Password',
-            'salt' => 'Salt',
+            'author' => 'Author',
             'email' => 'Email',
-            'profile' => 'Profile',
+            'content' => 'Content',
+            'status' => 'Status',
+            'url' => 'Url',
         ];
     }
 }
