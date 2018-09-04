@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\Lookup;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Post */
@@ -16,9 +17,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
     <?= $form->field($model, 'tags')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'status')->dropDownList(Lookup::items('PostStatus')); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
