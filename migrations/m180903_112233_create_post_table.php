@@ -18,7 +18,29 @@ class m180903_112233_create_post_table extends Migration
             'content' => $this->string(),
             'status' => $this->integer(),
             'tags' => $this->string(),
+            'create_time' => $this->date(),
+            'update_time' => $this->date(),
+            'author_id' => $this->integer(),
         ]);
+
+        // creates index for column 'author_id'
+        $this->createIndex(
+            'idx-post-author_id',
+            'post',
+            'author_id'
+        );
+
+        // add foreign key for table 'user'
+        $this->addForeignKey(
+            'fk-post-author_id',
+            'post',
+            'author_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+
     }
 
     /**
@@ -26,6 +48,18 @@ class m180903_112233_create_post_table extends Migration
      */
     public function safeDown()
     {
+        // drops foreign key for table 'user'
+        $this->dropForeignKey(
+            'fk-post-author_id',
+            'post'
+        );
+
+        // drops index for column 'author_id'
+        $this->dropIndex(
+            'idx-post-author_id',
+            'post'
+        );
+
         $this->dropTable('post');
     }
 }

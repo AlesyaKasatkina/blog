@@ -13,6 +13,10 @@ use Yii;
  * @property string $content
  * @property int $status
  * @property string $url
+ * @property string $create_time
+ * @property int $post_id
+ *
+ * @property Post $post
  */
 class Comment extends \yii\db\ActiveRecord
 {
@@ -30,8 +34,10 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'integer'],
+            [['status', 'post_id'], 'integer'],
+            [['create_time'], 'safe'],
             [['author', 'email', 'content', 'url'], 'string', 'max' => 255],
+            [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['post_id' => 'id']],
         ];
     }
 
@@ -47,6 +53,16 @@ class Comment extends \yii\db\ActiveRecord
             'content' => 'Content',
             'status' => 'Status',
             'url' => 'Url',
+            'create_time' => 'Create Time',
+            'post_id' => 'Post ID',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPost()
+    {
+        return $this->hasOne(Post::className(), ['id' => 'post_id']);
     }
 }
