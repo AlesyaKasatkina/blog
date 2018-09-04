@@ -21,6 +21,9 @@ use Yii;
  */
 class Post extends \yii\db\ActiveRecord
 {
+    const STATUS_DRAFT=1;
+    const STATUS_PUBLISHED=2;
+    const STATUS_ARCHIVED=3;
     /**
      * {@inheritdoc}
      */
@@ -77,5 +80,13 @@ class Post extends \yii\db\ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'author_id']);
+    }
+
+    public function getUrl()
+    {
+        return Yii::app()->createUrl('post/view', [
+                'id'=>$this->id,
+                'title'=>$this->title,
+        ]);
     }
 }

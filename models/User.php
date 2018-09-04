@@ -91,4 +91,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return ($this->password == $password) ? true : false;
     }
+
+    public function getPost()
+    {
+        return $this->hasOne(Post::className(), ['author_id' => 'id']);
+    }
 }
