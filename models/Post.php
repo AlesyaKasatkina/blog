@@ -84,9 +84,43 @@ class Post extends \yii\db\ActiveRecord
 
     public function getUrl()
     {
-        return Yii::app()->createUrl('post/view', [
+        return Yii::$app->createUrl('post/view', [
                 'id'=>$this->id,
                 'title'=>$this->title,
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        } else {
+            if($this->isNewRecord)
+            {
+                $this->create_time=$this->update_time=date('Y-m-d');
+                $this->author_id=Yii::$app->user->id;
+            }
+            else
+                $this->update_time=date('Y-m-d');
+            return true;
+        }
+
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        (new Tag)->updateFrequency($this->_oldTags, $this->tags);
+    }
+
+    private $_oldTags;
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->_oldTags=$this->tags;
     }
 }

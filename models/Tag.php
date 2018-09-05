@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "tag".
@@ -52,5 +53,38 @@ class Tag extends \yii\db\ActiveRecord
     public static function array2string($tags)
     {
         return implode(', ',$tags);
+    }
+
+    public function updateFrequency($oldTags, $newTags)
+    {
+        $oldTags=self::string2array($oldTags);
+        $newTags=self::string2array($newTags);
+        $this->addTags(array_values(array_diff($newTags,$oldTags)));
+        $this->removeTags(array_values(array_diff($oldTags,$newTags)));
+    }
+
+    public function addTags($tags)
+    {
+        foreach($tags as $name) {
+            if($tag = Tag::findOne(['name' => $name])) {
+                $tag->updateCounters(['frequency' => 1]);
+            } else {
+                $tag = new Tag;
+                $tag->name = $name;
+                $tag->frequency = 1;
+                $tag->save();
+            }
+        }
+    }
+    public function removeTags($tags)
+    {
+        if(empty($tags))
+            return;
+        foreach($tags as $name) {
+            $tag = Tag::findOne(['name' => $name]);
+            $tag->updateCounters(['frequency' => -1]);
+            $tag->deleteAll('frequency<=0');
+        }
+        
     }
 }
