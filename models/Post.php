@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "post".
@@ -84,7 +85,7 @@ class Post extends \yii\db\ActiveRecord
 
     public function getUrl()
     {
-        return Yii::$app->createUrl('post/view', [
+        return Url::to('post/view', [
                 'id'=>$this->id,
                 'title'=>$this->title,
         ]);

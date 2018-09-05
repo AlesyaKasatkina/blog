@@ -85,6 +85,5 @@ class Tag extends \yii\db\ActiveRecord
             $tag->updateCounters(['frequency' => -1]);
             $tag->deleteAll('frequency<=0');
         }
-        
     }
 }

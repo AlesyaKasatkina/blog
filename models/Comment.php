@@ -34,9 +34,11 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['content', 'author', 'email'], 'required'],
+            [['author', 'email', 'url'], 'string', 'max'=>128],
+            ['email','email'],
             [['status', 'post_id'], 'integer'],
             [['create_time'], 'safe'],
-            [['author', 'email', 'content', 'url'], 'string', 'max' => 255],
             [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['post_id' => 'id']],
         ];
     }
@@ -54,7 +56,7 @@ class Comment extends \yii\db\ActiveRecord
             'status' => 'Status',
             'url' => 'Url',
             'create_time' => 'Create Time',
-            'post_id' => 'Post ID',
+            'post_id' => 'Post',
         ];
     }
 
@@ -64,5 +66,18 @@ class Comment extends \yii\db\ActiveRecord
     public function getPost()
     {
         return $this->hasOne(Post::className(), ['id' => 'post_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        } else {
+            if ($this->isNewRecord) {
+                $this->create_time=date('Y-m-d');
+            }
+            return true;
+        }
+
     }
 }
