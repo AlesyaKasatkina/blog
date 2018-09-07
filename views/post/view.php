@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Post */
+/* @var $comment app\models\Comment */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Posts', 'url' => ['index']];
@@ -36,4 +37,32 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-</div>
+    <div id="comments">
+        <?php if($model->commentCount() >= 1): ?>
+        <h3>
+            <?php echo $model->commentCount()>1 ? $model->commentCount() . ' comments' : 'One comment'; ?>
+        </h3>
+
+        <?= $this->render('_comments',[
+            'model'=>$model,
+            'comments'=>$model->comments,
+            ]); ?>
+
+
+        <?php endif; ?>
+
+     <h3>Leave a Comment</h3>
+
+        <?php
+        $comment = new \app\models\Comment();
+        if(Yii::$app->session->hasFlash('commentSubmitted')): ?>
+            <div class="flash-success">
+                <?php echo Yii::$app->session->getFlash('commentSubmitted'); ?>
+            </div>
+        <?php else: ?>
+            <?= $this->render('/comment/_form',[
+                'model'=> $comment,
+            ]); ?>
+        <?php endif; ?>
+
+    </div><!-- comments -->

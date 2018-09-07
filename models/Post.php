@@ -124,4 +124,9 @@ class Post extends \yii\db\ActiveRecord
         parent::afterFind();
         $this->_oldTags=$this->tags;
     }
+
+    public function commentCount()
+    {
+        return count($this->comments);
+    }
 }
